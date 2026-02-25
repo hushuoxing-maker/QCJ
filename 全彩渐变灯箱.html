@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>古月·全彩渐变动感灯箱门头提示词生成器</title>
+<style>
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Microsoft YaHei", sans-serif;
+}
+body{
+  background: linear-gradient(135deg, #F8FAFF 0%, #E8F4F8 100%);
+  min-height: 100vh;
+  padding: 20px 0 60px;
+}
+/* 顶部标题 */
+.header{
+  width: 100%;
+  background: linear-gradient(90deg, #4361EE, #7209B7);
+  color: #fff;
+  text-align: center;
+  padding: 40px 20px;
+  margin-bottom: 30px;
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 4px 20px rgba(67,97,238,0.15);
+}
+.header h1{
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+.header p{
+  font-size: 15px;
+  opacity: 0.9;
+}
+/* 输入容器 */
+.input-container{
+  max-width: 800px;
+  margin: 0 auto 30px;
+  background: #fff;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.05);
+}
+.label{
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+.input-box{
+  width: 100%;
+  padding: 15px 20px;
+  font-size: 16px;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  outline: none;
+  transition: 0.3s;
+  margin-bottom: 20px;
+}
+.input-box:focus{
+  border-color: #4361EE;
+  box-shadow: 0 0 0 4px rgba(67,97,238,0.1);
+}
+.generate-btn{
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(90deg, #4361EE, #5B86E5);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 17px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.generate-btn:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(67,97,238,0.2);
+}
+.generate-btn:disabled{
+  background: #B1B9D8;
+  cursor: not-allowed;
+  transform: none;
+}
+/* 结果区域 */
+.result-container{
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.result-item{
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  border-left: 4px solid #4361EE;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+}
+.item-text{
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #2D3748;
+}
+.copy-btn{
+  padding: 8px 12px;
+  background: #4361EE;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: 0.2s;
+}
+.copy-btn:hover{
+  background: #3A56D4;
+}
+.copy-btn.copied{
+  background: #CCCCCC !important;
+  color: #666666 !important;
+  cursor: default !important;
+}
+/* 一键复制全部 */
+.copy-all-btn{
+  display: block;
+  margin: 20px auto 0;
+  padding: 12px 24px;
+  background: #4361EE;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+}
+.copy-all-btn:hover{
+  background: #3A56D4;
+}
+</style>
+
+<!-- 顶部标题 -->
+<div class="header">
+  <h1>🎨 古月·全彩渐变动感灯箱门头提示词生成器</h1>
+  <p>白天正立面｜平视无遮挡｜8K写实｜100%可施工</p>
+</div>
+
+<!-- 输入区域 -->
+<div class="input-container">
+  <div class="label">请输入店铺行业类型（必填）</div>
+  <input type="text" class="input-box" id="industryInput" placeholder="例如：餐饮美食、奶茶咖啡、美容美发、服装零售、数码家电、教育培训">
+  <button class="generate-btn" id="generateBtn" onclick="generatePrompts()">🚀 生成20组提示词</button>
+</div>
+
+<!-- 结果展示区域 -->
+<div class="result-container" id="resultContainer"></div>
+
+<script>
+// 存储所有生成的提示词
+let allPrompts = [];
+
+// 生成单条提示词的核心函数
+function createPrompt(industry, index) {
+  // 不同的标语变体，保证20组不重复
+  const sloganVariants = [
+    "潮流醒目标语", "潮流吸睛标语", "潮流醒目文字", "潮流创意标语",
+    "时尚醒目标语", "时尚吸睛标语", "创意醒目标语", "个性潮流标语",
+    "年轻化潮流标语", "视觉吸睛标语", "记忆点强标语", "简洁有力标语",
+    "网红风标语", "轻奢风标语", "简约潮流标语", "活力醒目标语",
+    "氛围感标语", "高辨识度标语", "打卡风标语", "潮流出圈标语"
+  ];
+  
+  // 主营品类变体
+  const categoryVariants = [
+    "主营品类", "特色品类", "招牌品类", "主营项目",
+    "核心品类", "爆款品类", "主打品类", "经典品类",
+    "王牌品类", "热门品类", "主推品类", "招牌项目",
+    "核心项目", "主打项目", "经典项目", "爆款项目",
+    "热门项目", "主推项目", "王牌项目", "特色项目"
+  ];
+
+  // 拼接完整提示词（包含所有强制元素）
+  return `白天自然光，门头正立面，完整展示，正面平视视角，无透视畸变，无遮挡，全彩渐变动感灯箱门头，整体动感灯箱，彩色渐变流光效果，高亮均匀发光，${industry}店铺门头，全彩动感灯箱、渐变灯箱面板、LED渐变光源、铝型材边框、亚克力面板、金属包边，品牌店名+${categoryVariants[index]}+${sloganVariants[index]}，现代清晰字体，日间灯箱整体渐变发光、色彩流动、高亮醒目，8K高清，商业写实效果图，细节丰富，色彩自然，可直接施工参考`;
+}
+
+// 复制单条提示词（点击后永久变灰）
+function copySinglePrompt(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    btn.textContent = "已复制";
+  });
+}
+
+// 一键复制全部20组提示词
+function copyAllPrompts() {
+  const allText = allPrompts.join("\n\n");
+  navigator.clipboard.writeText(allText).then(() => {
+    alert("✅ 已成功复制全部20组提示词！");
+  });
+}
+
+// 生成20组提示词的主函数
+function generatePrompts() {
+  const industry = document.getElementById("industryInput").value.trim();
+  const generateBtn = document.getElementById("generateBtn");
+  const resultContainer = document.getElementById("resultContainer");
+
+  // 校验输入
+  if (!industry) {
+    alert("请输入店铺行业类型（如：餐饮美食、奶茶咖啡、美容美发等）");
+    return;
+  }
+
+  // 按钮加载状态
+  generateBtn.disabled = true;
+  generateBtn.textContent = "正在生成...";
+  resultContainer.innerHTML = "";
+  allPrompts = [];
+
+  // 生成20组提示词
+  setTimeout(() => {
+    let resultHtml = "";
+    for (let i = 0; i < 20; i++) {
+      const prompt = createPrompt(industry, i);
+      allPrompts.push(prompt);
+      resultHtml += `
+        <div class="result-item">
+          <div class="item-text">${i+1}. ${prompt}</div>
+          <button class="copy-btn" onclick="copySinglePrompt('${prompt.replace(/'/g, "&apos;")}', this)">复制</button>
+        </div>
+      `;
+    }
+
+    // 添加一键复制全部按钮
+    resultHtml += `<button class="copy-all-btn" onclick="copyAllPrompts()">📋 一键复制全部20组</button>`;
+    
+    // 渲染结果
+    resultContainer.innerHTML = resultHtml;
+    
+    // 恢复按钮状态
+    generateBtn.disabled = false;
+    generateBtn.textContent = "🚀 生成20组提示词";
+  }, 800);
+}
+</script>
+</body>
+</html>
